@@ -1,0 +1,8 @@
+PyQt5==5.15.9
+cryptography==41.0.1
+pykeepass==4.0.3
+colorama==0.4.6
+pyperclip==1.8.2
+requests==2.31.0
+zxcvbn-python==4.4.28
+pytz==2024.1 
