@@ -28,6 +28,8 @@ class NotificationLabel(QLabel):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.hide)
         
+    
+        
     def show_notification(self, message, duration=2000):
         self.setText(message)
         self.show()
@@ -676,16 +678,21 @@ class PasswordManagerGUI(QMainWindow):
             self.table.setCellWidget(row, 5, button_widget)
             
     def add_password(self):
-        service, ok = QInputDialog.getText(self, "Yeni Şifre", "Servis Adı:")
-        if ok and service:
-            password, ok = QInputDialog.getText(self, "Yeni Şifre", "Şifre:", QLineEdit.Password)
-            if ok and password:
-                success, message = self.pm.add_password(service, password)
-                if success:
-                    self.notification.show_notification("✅ " + message)
-                    self.update_table()
-                else:
-                    QMessageBox.warning(self, "Hata", "❌ " + message)
+        service = self.service_input.text()
+        password = self.password_input.text()
+        
+        if not service or not password:
+            QMessageBox.warning(self, 'Kryptos', '❌ Lütfen servis adı ve şifre girin!')
+            return
+            
+        success, message = self.pm.add_password(service, password)
+        if success:
+            self.service_input.clear()
+            self.password_input.clear()
+            self.update_table()
+            self.notification.show_notification('✅ ' + message)
+        else:
+            QMessageBox.warning(self, 'Kryptos', '❌ ' + message)
 
     def update_password_strength(self):
         password = self.password_input.text()
