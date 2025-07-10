@@ -126,9 +126,6 @@ class PasswordManager:
         if not self.master_password:
             return False, "Ana şifre ayarlanmamış!"
             
-        if not service or not password:
-            return False, "Servis adı ve şifre boş olamaz!"
-            
         if self.encryption.get_entry(service):
             return False, "Bu servis için zaten bir şifre var!"
             
