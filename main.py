@@ -18,7 +18,6 @@ class PasswordManager:
         self.security_score = 0
         
     def calculate_password_strength(self, password):
-        """Şifre gücünü hesaplar ve detaylı bilgi döndürür"""
         result = zxcvbn.zxcvbn(password)
         return {
             'score': result['score'],  # 0-4 arası
@@ -28,7 +27,6 @@ class PasswordManager:
         }
         
     def check_password_breach(self, password):
-        """HaveIBeenPwned API kullanarak şifre sızıntısı kontrolü yapar"""
         sha1_hash = hashlib.sha1(password.encode('utf-8')).hexdigest().upper()
         prefix, suffix = sha1_hash[:5], sha1_hash[5:]
         
@@ -44,7 +42,6 @@ class PasswordManager:
             return -1  # API hatası
             
     def calculate_overall_security_score(self):
-        """Tüm şifrelerin genel güvenlik skorunu hesaplar"""
         total_score = 0
         total_passwords = 0
         weak_passwords = []
@@ -92,7 +89,6 @@ class PasswordManager:
         
     def generate_secure_password(self, length=16, include_uppercase=True, include_lowercase=True,
                                include_numbers=True, include_special=True):
-        """Güvenli şifre oluşturur"""
         import string
         import random
         
@@ -116,13 +112,11 @@ class PasswordManager:
                 return password
         
     def set_master_password(self, password):
-        """Ana şifreyi ayarlar ve veritabanını açar/oluşturur"""
         self.master_password = password
         if not self.encryption.open_database(password):
             self.encryption.create_database(password)
             
     def add_password(self, service, password, expires_in_days=90):
-        """Yeni bir şifre ekler"""
         if not self.master_password:
             return False, "Ana şifre ayarlanmamış!"
             
@@ -134,7 +128,6 @@ class PasswordManager:
         return False, "Şifre eklenirken bir hata oluştu!"
         
     def get_password(self, service):
-        """Belirli bir servisin şifresini getirir"""
         if not self.master_password:
             return False, None
             
@@ -144,7 +137,6 @@ class PasswordManager:
         return False, None
         
     def delete_password(self, service):
-        """Belirli bir servisin şifresini siler"""
         if not self.master_password:
             return False, "Ana şifre ayarlanmamış!"
             
@@ -153,11 +145,9 @@ class PasswordManager:
         return False, "Şifre silinirken bir hata oluştu!"
         
     def list_services(self):
-        """Tüm servisleri listeler"""
         return self.encryption.list_entries()
         
     def get_password_info(self, service):
-        """Belirli bir servisin şifre bilgilerini getirir"""
         entry = self.encryption.get_entry(service)
         if entry:
             # Süre bilgisini notlardan al
@@ -183,7 +173,6 @@ class PasswordManager:
         return None
         
     def toggle_fixed_password(self, service):
-        """Şifrenin süresiz olup olmadığını değiştirir"""
         entry = self.encryption.get_entry(service)
         if entry:
             # Mevcut süreyi kontrol et
@@ -197,7 +186,6 @@ class PasswordManager:
         return False, "Şifre durumu güncellenirken bir hata oluştu!"
         
     def check_expiring_passwords(self):
-        """Süresi yakında dolacak şifreleri kontrol eder"""
         expiring_passwords = []
         for service in self.list_services():
             info = self.get_password_info(service)
@@ -212,7 +200,6 @@ class PasswordManager:
         return expiring_passwords
         
     def update_password(self, service, new_password):
-        """Belirli bir servisin şifresini günceller"""
         if not self.master_password:
             return False, "Ana şifre ayarlanmamış!"
             
